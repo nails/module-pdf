@@ -6,6 +6,7 @@ class Pdf
 	private $_ci;
 	private $_dompdf;
 	private $_default_filename;
+	protected $_errors;
 
 
 	// --------------------------------------------------------------------------
@@ -77,6 +78,19 @@ class Pdf
 
 		require_once FCPATH . '/vendor/dompdf/dompdf/dompdf_config.inc.php';
 
+		$this->_instantiate();
+	}
+
+
+	// --------------------------------------------------------------------------
+
+
+	/**
+	 * Instantiates a new instance of DOMPDF
+	 * @return void
+	 */
+	protected function _instantiate()
+	{
 		$this->_dompdf = new DOMPDF();
 	}
 
@@ -164,6 +178,44 @@ class Pdf
 
 
 	/**
+	 * Saves a PDF to disk
+	 * @param  string $path     The path to save to
+	 * @param  string $filename The filename to give the PDF
+	 * @return boolean
+	 */
+	public function save( $path, $filename )
+	{
+		if ( ! is_writable( $path ) ) :
+
+			$this->_set_error( 'Cannot write to ' . $path );
+			return FALSE;
+
+		endif;
+
+		// --------------------------------------------------------------------------
+
+		return (bool) file_put_contents( $filename, $dompdf->output() );
+	}
+
+
+	// --------------------------------------------------------------------------
+
+
+	/**
+	 * Unsets the instance of DOMPDF and reinstanciates
+	 * @return void
+	 */
+	public function reset()
+	{
+		unset( $this->_pdf );
+		$this->_instantiate();
+	}
+
+
+	// --------------------------------------------------------------------------
+
+
+	/**
 	 * MagicMethod routes any method calls to this class to DOMPDF if it exists
 	 * @param  string $method    The method called
 	 * @param  array  $arguments Any arguments passed
@@ -180,5 +232,92 @@ class Pdf
 			throw new exception( 'Call to undefined method Pdf::' . $method . '()' );
 
 		endif;
+	}
+
+
+	// --------------------------------------------------------------------------
+
+
+	/**
+	 * --------------------------------------------------------------------------
+	 *
+	 * ERROR METHODS
+	 * These methods provide a consistent interface for setting and retrieving
+	 * errors which are generated.
+	 *
+	 * --------------------------------------------------------------------------
+	 **/
+
+
+	/**
+	 * Set a generic error
+	 *
+	 * @access	protected
+	 * @param	string	$error	The error message
+	 * @return void
+	 **/
+	protected function _set_error( $error )
+	{
+		$this->_errors[] = $error;
+	}
+
+
+	// --------------------------------------------------------------------------
+
+
+	/**
+	 * Get any errors
+	 *
+	 * @access	public
+	 * @return array
+	 **/
+	public function get_errors()
+	{
+		return $this->_errors;
+	}
+
+
+	// --------------------------------------------------------------------------
+
+
+	/**
+	 * Get last error
+	 *
+	 * @access	public
+	 * @return mixed
+	 **/
+	public function last_error()
+	{
+		return end( $this->_errors );
+	}
+
+
+	// --------------------------------------------------------------------------
+
+
+	/**
+	 * Clear the last error
+	 *
+	 * @access	public
+	 * @return mixed
+	 **/
+	public function clear_last_error()
+	{
+		return array_pop( $this->_errors );
+	}
+
+
+	// --------------------------------------------------------------------------
+
+
+	/**
+	 * Clears all errors
+	 *
+	 * @access	public
+	 * @return mixed
+	 **/
+	public function clear_errors()
+	{
+		$this->_errors = array();
 	}
 }
