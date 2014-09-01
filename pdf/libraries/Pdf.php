@@ -7,6 +7,7 @@ class Pdf
 	private $_dompdf;
 	private $_default_filename;
 	protected $_errors;
+	protected $_instantiate_count;
 
 
 	// --------------------------------------------------------------------------
@@ -21,64 +22,63 @@ class Pdf
 
 		// --------------------------------------------------------------------------
 
-		$this->_default_filename = 'document.pdf';
-
-		// --------------------------------------------------------------------------
-
-		//	Load and configure DOMPDF
-		define( 'DOMPDF_ENABLE_AUTOLOAD', FALSE );
-		define( 'DOMPDF_FONT_DIR', DEPLOY_CACHE_DIR . '/dompdf/font/dir/' );
-		define( 'DOMPDF_FONT_CACHE', DEPLOY_CACHE_DIR . '/dompdf/font/cache/' );
-
-		// --------------------------------------------------------------------------
-
-		//	Test the cache dirs exists and are writable.
-		//	============================================
-		//	If the caches aren't there or writable log this as an error,
-		//	no need to halt execution as the cache *might* not be used. If
-		//	on a production environment errors will be muted and shouldn't affect
-		//	anything; but make a not in the logs regardless
+		$this->_default_filename	= 'document.pdf';
+		$this->_instantiate_count	= 0;
+	}
 
 
-		if ( ! is_dir( DOMPDF_FONT_DIR ) ) :
+	// --------------------------------------------------------------------------
 
-			//	Not a directory, attempt to create
-			if ( ! @mkdir( DOMPDF_FONT_DIR, 0777, TRUE ) ) :
 
-				//	Couldn't create. Sad Panda
-				log_message( 'error', 'DOMPDF\'s cache folder doesn\'t exist, and I couldn\'t create it: ' . DOMPDF_FONT_DIR );
+	/**
+	 * Defines a DOMPDF constant, if not already defined
+	 * @param string $constant The name of the constant
+	 * @param string $value    The value to give the constant
+	 */
+	static function set_config( $constant, $value )
+	{
+		if ( ! defined( $constant ) ) :
 
-			endif;
+			define( $constant, $value );
 
-		elseif ( ! is_really_writable( DOMPDF_FONT_DIR ) ) :
+		else :
 
-			//	Couldn't write. Sadder Panda
-			log_message( 'error', 'DOMPDF\'s cache folder exists, but I couldn\'t write to it: ' . DOMPDF_FONT_DIR );
+			return FALSE;
 
 		endif;
+	}
 
-		if ( ! is_dir( DOMPDF_FONT_CACHE ) ) :
+	// --------------------------------------------------------------------------
 
-			//	Not a directory, attempt to create
-			if ( ! @mkdir( DOMPDF_FONT_CACHE, 0777, TRUE ) ) :
 
-				//	Couldn't create. Sad Panda
-				log_message( 'error', 'DOMPDF\'s cache folder doesn\'t exist, and I couldn\'t create it: ' . DOMPDF_FONT_CACHE );
+	/**
+	 * Alias for setting paper size
+	 * @param string $value The size of paper to use
+	 */
+	public function set_paper_size( $size = 'A4', $orientation = 'portrait' )
+	{
+		if ( $this->_instantiate_count == 0 ) :
 
-			endif;
-
-		elseif ( ! is_really_writable( DOMPDF_FONT_CACHE ) ) :
-
-			//	Couldn't write. Sadder Panda
-			log_message( 'error', 'DOMPDF\'s cache folder exists, but I couldn\'t write to it: ' . DOMPDF_FONT_CACHE );
+			$this->_instantiate();
 
 		endif;
 
 		// --------------------------------------------------------------------------
 
-		require_once FCPATH . '/vendor/dompdf/dompdf/dompdf_config.inc.php';
+		$this->_dompdf->set_paper( $size, $orientation );
+	}
 
-		$this->_instantiate();
+
+	// --------------------------------------------------------------------------
+
+
+	/**
+	 * Alias for enabling or disabling remote resources in PDFs
+	 * @param string $value The size of paper to use
+	 */
+	static function enable_remote( $value = TRUE )
+	{
+		return self::set_config( 'DOMPDF_ENABLE_REMOTE', $value );
 	}
 
 
@@ -91,7 +91,68 @@ class Pdf
 	 */
 	protected function _instantiate()
 	{
+		if ( $this->_instantiate_count == 0 ) :
+
+			//	Load and configure DOMPDF
+			self::set_config( 'DOMPDF_ENABLE_AUTOLOAD',		FALSE );
+			self::set_config( 'DOMPDF_DEFAULT_PAPER_SIZE',	'A4' );
+			self::set_config( 'DOMPDF_ENABLE_REMOTE',		TRUE );
+			self::set_config( 'DOMPDF_FONT_DIR',			DEPLOY_CACHE_DIR . 'dompdf/font/dir/' );
+			self::set_config( 'DOMPDF_FONT_CACHE',			DEPLOY_CACHE_DIR . 'dompdf/font/cache/' );
+
+			// --------------------------------------------------------------------------
+
+			/**
+			 * Test the cache dirs exists and are writable.
+			 * ============================================
+			 * If the caches aren't there or writable log this as an error,
+			 * no need to halt execution as the cache *might* not be used. If
+			 * on a production environment errors will be muted and shouldn't affect
+			 * anything; but make a not in the logs regardless
+			 */
+
+			if ( ! is_dir( DOMPDF_FONT_DIR ) ) :
+
+				//	Not a directory, attempt to create
+				if ( ! @mkdir( DOMPDF_FONT_DIR, 0777, TRUE ) ) :
+
+					//	Couldn't create. Sad Panda
+					log_message( 'error', 'DOMPDF\'s cache folder doesn\'t exist, and I couldn\'t create it: ' . DOMPDF_FONT_DIR );
+
+				endif;
+
+			elseif ( ! is_really_writable( DOMPDF_FONT_DIR ) ) :
+
+				//	Couldn't write. Sadder Panda
+				log_message( 'error', 'DOMPDF\'s cache folder exists, but I couldn\'t write to it: ' . DOMPDF_FONT_DIR );
+
+			endif;
+
+			if ( ! is_dir( DOMPDF_FONT_CACHE ) ) :
+
+				//	Not a directory, attempt to create
+				if ( ! @mkdir( DOMPDF_FONT_CACHE, 0777, TRUE ) ) :
+
+					//	Couldn't create. Sad Panda
+					log_message( 'error', 'DOMPDF\'s cache folder doesn\'t exist, and I couldn\'t create it: ' . DOMPDF_FONT_CACHE );
+
+				endif;
+
+			elseif ( ! is_really_writable( DOMPDF_FONT_CACHE ) ) :
+
+				//	Couldn't write. Sadder Panda
+				log_message( 'error', 'DOMPDF\'s cache folder exists, but I couldn\'t write to it: ' . DOMPDF_FONT_CACHE );
+
+			endif;
+
+			// --------------------------------------------------------------------------
+
+			require_once FCPATH . '/vendor/dompdf/dompdf/dompdf_config.inc.php';
+
+		endif;
+
 		$this->_dompdf = new DOMPDF();
+		$this->_instantiate_count++;
 	}
 
 
@@ -108,13 +169,23 @@ class Pdf
 	{
 		$_html	= '';
 		$views	= (array) $views;
-		$views	= array_filter( $_views );
+		$views	= array_filter( $views );
 
 		foreach( $views AS $view ) :
 
 			$_html .= $this->_ci->load->view( $view, $data, TRUE );
 
 		endforeach;
+
+		// --------------------------------------------------------------------------
+
+		if ( $this->_instantiate_count == 0 ) :
+
+			$this->_instantiate();
+
+		endif;
+
+		// --------------------------------------------------------------------------
 
 		$this->_dompdf->load_html( $_html );
 	}
@@ -142,6 +213,17 @@ class Pdf
 
 		$options['Attachment'] = 1;
 
+		// --------------------------------------------------------------------------
+
+		if ( $this->_instantiate_count == 0 ) :
+
+			$this->_instantiate();
+
+		endif;
+
+		// --------------------------------------------------------------------------
+
+		$this->_dompdf->render();
 		$this->_dompdf->stream( $filename, $options );
 		exit();
 	}
@@ -169,6 +251,17 @@ class Pdf
 
 		$options['Attachment'] = 0;
 
+		// --------------------------------------------------------------------------
+
+		if ( $this->_instantiate_count == 0 ) :
+
+			$this->_instantiate();
+
+		endif;
+
+		// --------------------------------------------------------------------------
+
+		$this->_dompdf->render();
 		$this->_dompdf->stream( $filename, $options );
 		exit();
 	}
@@ -194,7 +287,16 @@ class Pdf
 
 		// --------------------------------------------------------------------------
 
-		return (bool) file_put_contents( $filename, $dompdf->output() );
+		if ( $this->_instantiate_count == 0 ) :
+
+			$this->_instantiate();
+
+		endif;
+
+		// --------------------------------------------------------------------------
+
+		$this->_dompdf->render();
+		return (bool) file_put_contents( $filename, $this->_dompdf->output() );
 	}
 
 
@@ -207,7 +309,7 @@ class Pdf
 	 */
 	public function reset()
 	{
-		unset( $this->_pdf );
+		unset( $this->_dompdf );
 		$this->_instantiate();
 	}
 
