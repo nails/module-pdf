@@ -2,6 +2,9 @@
 
 class Pdf
 {
+	//	Class traits
+	use NAILS_COMMON_TRAIT_ERROR_HANDLING;
+	use NAILS_COMMON_TRAIT_CACHING;
 
 	private $_ci;
 	private $_dompdf;
@@ -335,77 +338,7 @@ class Pdf
 
 		endif;
 	}
-
-
-	/**
-	 * --------------------------------------------------------------------------
-	 *
-	 * ERROR METHODS
-	 * These methods provide a consistent interface for setting and retrieving
-	 * errors which are generated.
-	 *
-	 * --------------------------------------------------------------------------
-	 **/
-
-
-	/**
-	 * Set a generic error
-	 * @param string $error The error message
-	 */
-	protected function _set_error( $error )
-	{
-		$this->_errors[] = $error;
-	}
-
-
-	// --------------------------------------------------------------------------
-
-
-	/**
-	 * Return the error array
-	 * @return array
-	 */
-	public function get_errors()
-	{
-		return $this->_errors;
-	}
-
-
-	// --------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the last error
-	 * @return string
-	 */
-	public function last_error()
-	{
-		return end( $this->_errors );
-	}
-
-
-	// --------------------------------------------------------------------------
-
-
-	/**
-	 * Clears the last error
-	 * @return mixed
-	 */
-	public function clear_last_error()
-	{
-		return array_pop( $this->_errors );
-	}
-
-
-	// --------------------------------------------------------------------------
-
-
-	/**
-	 * Clears all errors
-	 * @return void
-	 */
-	public function clear_errors()
-	{
-		$this->_errors = array();
-	}
 }
+
+/* End of file Pdf.php */
+/* Location: ./module-pdf/pdf/libraries/Pdf.php */
