@@ -174,7 +174,7 @@ class Pdf
 		$views	= (array) $views;
 		$views	= array_filter( $views );
 
-		foreach ( $views AS $view ) :
+		foreach ( $views as $view ) :
 
 			$_html .= $this->_ci->load->view( $view, $data, TRUE );
 
