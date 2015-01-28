@@ -1,36 +1,43 @@
 {
-	"name": "nailsapp/module-pdf",
-	"keywords":
-	[
-		"Nails",
-		"Shed Collective",
-		"CodeIgniter",
-		"PDF Module"
-	],
-	"homepage": "http://nailsapp.co.uk/modules/pdf",
-	"description": "This the \"PDF\" module for Nails.",
-	"license": "MIT",
-	"authors":
-	[
-		{
-			"name": "Pablo de la Pena",
-			"email": "p@shedcollective.org",
-			"homepage": "http://shedcollective.org",
-			"role": "Developer"
-		},
-		{
-			"name": "Gary Duncan",
-			"email": "g@shedcollective.org",
-			"homepage": "http://shedcollective.org",
-			"role": "Developer"
-		}
-	],
-	"support":
-	{
-		"email": "hello@shedcollective.org"
-	},
-	"require":
-	{
-		"dompdf/dompdf": "~0.6.1"
-	}
+    "name": "nailsapp/module-pdf",
+    "keywords":
+    [
+        "Nails",
+        "Shed Collective",
+        "CodeIgniter",
+        "PDF Module"
+    ],
+    "homepage": "http://nailsapp.co.uk/modules/pdf",
+    "description": "This is the \"PDF\" module for Nails.",
+    "license": "MIT",
+    "authors":
+    [
+        {
+            "name": "Pablo de la Pena",
+            "email": "p@shedcollective.org",
+            "homepage": "http://shedcollective.org",
+            "role": "Developer"
+        },
+        {
+            "name": "Gary Duncan",
+            "email": "g@shedcollective.org",
+            "homepage": "http://shedcollective.org",
+            "role": "Developer"
+        }
+    ],
+    "support":
+    {
+        "email": "hello@shedcollective.org"
+    },
+    "require":
+    {
+        "dompdf/dompdf": "~0.6.1"
+    },
+    "extra":
+    {
+        "nails" :
+        {
+            "type": "module"
+        }
+    }
 }
