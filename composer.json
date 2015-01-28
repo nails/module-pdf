@@ -37,6 +37,7 @@
     {
         "nails" :
         {
+            "moduleName": "pdf",
             "type": "module"
         }
     }
