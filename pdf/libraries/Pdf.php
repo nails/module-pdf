@@ -226,9 +226,17 @@ class Pdf
 
 		// --------------------------------------------------------------------------
 
-		$this->_dompdf->render();
-		$this->_dompdf->stream( $filename, $options );
-		exit();
+		try {
+
+			$this->_dompdf->render();
+			$this->_dompdf->stream( $filename, $options );
+			exit();
+
+		} catch(Exception $e) {
+
+			$this->_set_error($e->getMessage());
+			return false;
+		}
 	}
 
 
