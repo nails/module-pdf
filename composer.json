@@ -1,12 +1,6 @@
 {
     "name": "nailsapp/module-pdf",
-    "keywords":
-    [
-        "Nails",
-        "Shed Collective",
-        "CodeIgniter",
-        "PDF Module"
-    ],
+    "keywords": ["Nails", "Shed Collective", "CodeIgniter", "PDF Module"],
     "homepage": "http://nailsapp.co.uk/modules/pdf",
     "description": "This is the \"PDF\" module for Nails.",
     "license": "MIT",
