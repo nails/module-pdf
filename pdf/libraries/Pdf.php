@@ -289,8 +289,8 @@ class Pdf
             $sCacheFile = 'TEMP-PDF-' . md5(uniqid() . microtime(true)) . '.pdf';
             if ($this->save(DEPLOY_CACHE_DIR, $sCacheFile)) {
 
-                $this->oCi->load->library('cdn/cdn');
-                $oResult = $this->oCi->cdn->object_create(
+                $oCdn = \Nails\Factory::service('Cdn', 'nailsapp/module-cdn');
+                $oResult = $oCdn->object_create(
                     DEPLOY_CACHE_DIR . $sCacheFile,
                     $sBucket,
                     array('filename_display' => $sFilename)
@@ -303,7 +303,7 @@ class Pdf
 
                 } else {
 
-                    $this->_set_error($this->cdn->last_error());
+                    $this->_set_error($oCdn->last_error());
                     return false;
                 }
 
