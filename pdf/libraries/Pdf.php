@@ -10,10 +10,12 @@
  * @link
  */
 
+use Nails\Factory;
+
 class Pdf
 {
-    use \Nails\Common\Traits\ErrorHandling;
-    use \Nails\Common\Traits\Caching;
+    use Nails\Common\Traits\ErrorHandling;
+    use Nails\Common\Traits\Caching;
 
     // --------------------------------------------------------------------------
 
@@ -289,7 +291,7 @@ class Pdf
             $sCacheFile = 'TEMP-PDF-' . md5(uniqid() . microtime(true)) . '.pdf';
             if ($this->save(DEPLOY_CACHE_DIR, $sCacheFile)) {
 
-                $oCdn = \Nails\Factory::service('Cdn', 'nailsapp/module-cdn');
+                $oCdn = Factory::service('Cdn', 'nailsapp/module-cdn');
                 $oResult = $oCdn->object_create(
                     DEPLOY_CACHE_DIR . $sCacheFile,
                     $sBucket,
