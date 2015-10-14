@@ -14,8 +14,8 @@ use Nails\Factory;
 
 class Pdf
 {
-    use Nails\Common\Traits\ErrorHandling;
-    use Nails\Common\Traits\Caching;
+    use \Nails\Common\Traits\ErrorHandling;
+    use \Nails\Common\Traits\Caching;
 
     // --------------------------------------------------------------------------
 
