@@ -218,7 +218,7 @@ class Pdf
 
         } catch(Exception $e) {
 
-            $this->_set_error($e->getMessage());
+            $this->setError($e->getMessage());
             return false;
         }
     }
@@ -260,7 +260,7 @@ class Pdf
     {
         if (!is_writable($sPath)) {
 
-            $this->_set_error('Cannot write to ' . $sPath);
+            $this->setError('Cannot write to ' . $sPath);
             return false;
         }
 
@@ -305,7 +305,7 @@ class Pdf
 
                 } else {
 
-                    $this->_set_error($oCdn->last_error());
+                    $this->setError($oCdn->lastError());
                     return false;
                 }
 
@@ -315,7 +315,7 @@ class Pdf
 
         } else {
 
-            $this->_set_error('CDN module is not available');
+            $this->setError('CDN module is not available');
             return false;
         }
     }
