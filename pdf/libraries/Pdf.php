@@ -292,7 +292,7 @@ class Pdf
             if ($this->save(DEPLOY_CACHE_DIR, $sCacheFile)) {
 
                 $oCdn = Factory::service('Cdn', 'nailsapp/module-cdn');
-                $oResult = $oCdn->object_create(
+                $oResult = $oCdn->objectCreate(
                     DEPLOY_CACHE_DIR . $sCacheFile,
                     $sBucket,
                     array('filename_display' => $sFilename)
