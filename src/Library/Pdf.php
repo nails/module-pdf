@@ -10,7 +10,10 @@
  * @link
  */
 
+namespace Nails\Pdf\Library;
+
 use Nails\Factory;
+use Nails\Pdf\Exception\PdfException;
 
 class Pdf
 {
@@ -19,9 +22,9 @@ class Pdf
 
     // --------------------------------------------------------------------------
 
-    private $oCi;
-    private $oDomPdf;
-    private $sDefaultFilename;
+    private   $oCi;
+    private   $oDomPdf;
+    private   $sDefaultFilename;
     protected $iInstantiateCount;
 
     // --------------------------------------------------------------------------
@@ -300,7 +303,7 @@ class Pdf
 
                 if ($oResult) {
 
-                	@unlink(DEPLOY_CACHE_DIR . $sCacheFile);
+                    @unlink(DEPLOY_CACHE_DIR . $sCacheFile);
                     return $oResult;
 
                 } else {
@@ -348,7 +351,7 @@ class Pdf
 
         } else {
 
-            throw new exception('Call to undefined method Pdf::' . $sMethod . '()');
+            throw new PdfException('Call to undefined method Pdf::' . $sMethod . '()');
         }
     }
 }

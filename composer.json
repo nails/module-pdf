@@ -34,5 +34,9 @@
             "moduleName": "pdf",
             "type": "module"
         }
+    },
+    "autoload":
+    {
+        "psr-4": {"Nails\\Pdf\\": "src/"}
     }
 }
