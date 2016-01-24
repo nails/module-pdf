@@ -219,7 +219,7 @@ class Pdf
             $this->oDomPdf->stream($sFilename, $aOptions);
             exit();
 
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
 
             $this->setError($e->getMessage());
             return false;
