@@ -12,6 +12,7 @@
 
 namespace Nails\Pdf\Library;
 
+use DOMPDF;
 use Nails\Factory;
 use Nails\Pdf\Exception\PdfException;
 
