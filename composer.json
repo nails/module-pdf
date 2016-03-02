@@ -32,7 +32,8 @@
         "nails" :
         {
             "moduleName": "pdf",
-            "type": "module"
+            "type": "module",
+            "namespace": "Nails\\Pdf\\"
         }
     },
     "autoload":
