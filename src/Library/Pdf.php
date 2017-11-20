@@ -48,9 +48,9 @@ class Pdf
     const DEFAULT_PAPER_SIZE = 'A4';
 
     /**
-     * The default paper orientaton
+     * The default paper orientation
      */
-    const DEFAULT_PAPER_ORIENTATION = 'landscape';
+    const DEFAULT_PAPER_ORIENTATION = 'portrait';
 
     // --------------------------------------------------------------------------
 
@@ -180,7 +180,7 @@ class Pdf
     {
         $this->sPaperSize        = $sSize ?: static::DEFAULT_PAPER_SIZE;
         $this->sPaperOrientation = $sOrientation ?: static::DEFAULT_PAPER_ORIENTATION;
-        $this->oDomPdf->setPaper($sSize, $sOrientation);
+        $this->oDomPdf->setPaper($this->sPaperSize, $this->sPaperOrientation);
         return $this;
     }
 
