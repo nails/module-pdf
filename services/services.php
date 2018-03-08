@@ -1,13 +1,13 @@
 <?php
 
-return array(
-    'services' => array(
+return [
+    'services' => [
         'Pdf' => function () {
-            if (class_exists('\App\Pdf\Library\Pdf')) {
-                return new \App\Pdf\Library\Pdf();
+            if (class_exists('\App\Pdf\Service\Pdf')) {
+                return new \App\Pdf\Service\Pdf();
             } else {
-                return new \Nails\Pdf\Library\Pdf();
+                return new \Nails\Pdf\Service\Pdf();
             }
-        }
-    )
-);
+        },
+    ],
+];

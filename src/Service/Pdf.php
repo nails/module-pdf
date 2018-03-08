@@ -10,7 +10,7 @@
  * @link
  */
 
-namespace Nails\Pdf\Library;
+namespace Nails\Pdf\Service;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
