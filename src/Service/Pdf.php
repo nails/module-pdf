@@ -37,8 +37,8 @@ class Pdf
     const DEFAULT_OPTIONS = [
         'defaultPaperSize'     => 'A4',
         'isRemoteEnabled'      => true,
-        'fontDir'              => DEPLOY_CACHE_DIR . 'dompdf/font/dir/',
-        'fontCache'            => DEPLOY_CACHE_DIR . 'dompdf/font/cache/',
+        'fontDir'              => CACHE_PATH . 'dompdf/font/dir/',
+        'fontCache'            => CACHE_PATH . 'dompdf/font/cache/',
         'isHtml5ParserEnabled' => true,
     ];
 
@@ -309,7 +309,7 @@ class Pdf
         if (isModuleEnabled('nailsapp/module-cdn')) {
 
             //  Save temporary file
-            $sCacheDir  = DEPLOY_CACHE_DIR;
+            $sCacheDir  = CACHE_PATH;
             $sCacheFile = 'TEMP-PDF-' . md5(uniqid() . microtime(true)) . '.pdf';
             if ($this->save($sCacheDir, $sCacheFile)) {
 
