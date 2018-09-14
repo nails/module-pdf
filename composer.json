@@ -1,5 +1,5 @@
 {
-    "name": "nailsapp/module-pdf",
+    "name": "nails/module-pdf",
     "keywords": ["Nails", "Shed Collective", "CodeIgniter", "PDF Module"],
     "homepage": "http://nailsapp.co.uk/modules/pdf",
     "description": "This is the \"PDF\" module for Nails.",

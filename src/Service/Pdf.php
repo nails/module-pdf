@@ -306,14 +306,14 @@ class Pdf
      */
     public function saveToCdn($sFilename, $sBucket = null)
     {
-        if (isModuleEnabled('nailsapp/module-cdn')) {
+        if (isModuleEnabled('nails/module-cdn')) {
 
             //  Save temporary file
             $sCacheDir  = CACHE_PATH;
             $sCacheFile = 'TEMP-PDF-' . md5(uniqid() . microtime(true)) . '.pdf';
             if ($this->save($sCacheDir, $sCacheFile)) {
 
-                $oCdn    = Factory::service('Cdn', 'nailsapp/module-cdn');
+                $oCdn    = Factory::service('Cdn', 'nails/module-cdn');
                 $oResult = $oCdn->objectCreate(
                     $sCacheDir . $sCacheFile,
                     $sBucket,
