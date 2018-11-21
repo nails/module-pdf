@@ -16,6 +16,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Nails\Common\Traits\Caching;
 use Nails\Common\Traits\ErrorHandling;
+use Nails\Components;
 use Nails\Factory;
 use Nails\Pdf\Exception\PdfException;
 
@@ -306,7 +307,7 @@ class Pdf
      */
     public function saveToCdn($sFilename, $sBucket = null)
     {
-        if (isModuleEnabled('nails/module-cdn')) {
+        if (Components::exists('nails/module-cdn')) {
 
             //  Save temporary file
             $sCacheDir  = CACHE_PATH;
