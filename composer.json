@@ -27,6 +27,10 @@
     {
         "dompdf/dompdf": "~0.8.0"
     },
+    "require-dev":
+    {
+        "phpunit/phpunit": "7.*"
+    },
     "extra":
     {
         "nails" :
