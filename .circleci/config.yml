@@ -19,7 +19,12 @@ jobs:
     steps:
       - checkout
 
-      - run: sudo apt-get update -y
+      # Install GD extension
+      # CircleCI: It does not work, bro
+      # Me: Try again
+      # CircleCI: Cool, I got dis
+      # https://discuss.circleci.com/t/apt-get-error-exited-with-code-100/26722/5
+      - run: sudo apt-get update -y || sudo apt-get update -y
       - run: sudo apt-get install -y libpng-dev
       - run: sudo docker-php-ext-install gd
 
