@@ -14,6 +14,7 @@ namespace Nails\Pdf\Service;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Nails\Common\Service\FileCache;
 use Nails\Common\Traits\Caching;
 use Nails\Common\Traits\ErrorHandling;
 use Nails\Components;
@@ -38,8 +39,8 @@ class Pdf
     const DEFAULT_OPTIONS = [
         'defaultPaperSize'     => 'A4',
         'isRemoteEnabled'      => true,
-        'fontDir'              => CACHE_PATH . 'dompdf/font/dir/',
-        'fontCache'            => CACHE_PATH . 'dompdf/font/cache/',
+        'fontDir'              => null, //  Declared dynamically
+        'fontCache'            => null, //  Declared dynamically
         'isHtml5ParserEnabled' => true,
     ];
 
@@ -57,24 +58,28 @@ class Pdf
 
     /**
      * Holds a reference to DomPDF
+     *
      * @var Dompdf
      */
     protected $oDomPdf;
 
     /**
      * Stores any custom options as applied by the user so that they are maintained across instances
+     *
      * @var array
      */
     protected $aCustomOptions = [];
 
     /**
      * Stores the current paper size
+     *
      * @var string
      */
     protected $sPaperSize = '';
 
     /**
      * Stores the current paper orientation
+     *
      * @var string
      */
     protected $sPaperOrientation = '';
@@ -93,12 +98,20 @@ class Pdf
 
     /**
      * Instantiate a new instance of DomPDF
+     *
      * @return $this
      */
     protected function instantiate()
     {
         $oOptions = new Options();
         $aOptions = [];
+
+        /** @var FileCache $oFileCache */
+        $oFileCache = Factory::service('FileCache');
+
+        $aDefaultOptions              = self::DEFAULT_OPTIONS;
+        $aDefaultOptions['fontDir']   = $oFileCache->getDir() . 'dompdf/font/dir/';
+        $aDefaultOptions['fontCache'] = $oFileCache->getDir() . 'dompdf/font/cache/';
 
         //  Default options
         foreach (self::DEFAULT_OPTIONS as $sOption => $mValue) {
@@ -125,6 +138,7 @@ class Pdf
 
     /**
      * Unset the instance of DomPDF and re-instantiate
+     *
      * @return $this
      */
     public function reset()
@@ -139,8 +153,8 @@ class Pdf
     /**
      * Defines a DomPDF constant, if not already defined
      *
-     * @param  string $sOption The name of the option
-     * @param  string $mValue  The value to give the option
+     * @param string $sOption The name of the option
+     * @param string $mValue  The value to give the option
      *
      * @return $this;
      */
@@ -156,8 +170,8 @@ class Pdf
     /**
      * Alias to setOption()
      *
-     * @param  string $sOption The name of the option
-     * @param  string $mValue  The value to give the option
+     * @param string $sOption The name of the option
+     * @param string $mValue  The value to give the option
      *
      * @return $this
      * @deprecated
@@ -172,8 +186,8 @@ class Pdf
     /**
      * Alias for setting the paper size
      *
-     * @param  string $sSize        The paper size to use
-     * @param  string $sOrientation The paper orientation
+     * @param string $sSize        The paper size to use
+     * @param string $sOrientation The paper orientation
      *
      * @return $this
      */
@@ -190,7 +204,7 @@ class Pdf
     /**
      * Alias for enabling or disabling remote resources in PDFs
      *
-     * @param  boolean $bValue whether to enable remote resources
+     * @param boolean $bValue whether to enable remote resources
      *
      * @return $this
      */
@@ -205,8 +219,8 @@ class Pdf
     /**
      * Loads CI views and passes it as HTML to DomPDF
      *
-     * @param  mixed $mViews An array of views, or a single view as a string
-     * @param  array $aData  View variables to pass to the view
+     * @param mixed $mViews An array of views, or a single view as a string
+     * @param array $aData  View variables to pass to the view
      *
      * @return void
      */
@@ -228,8 +242,8 @@ class Pdf
     /**
      * Renders the PDF and sends it to the browser as a download.
      *
-     * @param  string $sFilename The filename to give the PDF
-     * @param  array  $aOptions  An array of options to pass to DomPDF's stream() method
+     * @param string $sFilename The filename to give the PDF
+     * @param array  $aOptions  An array of options to pass to DomPDF's stream() method
      *
      * @return void|bool
      */
@@ -250,8 +264,8 @@ class Pdf
     /**
      * Renders the PDF and sends it to the browser as an inline PDF.
      *
-     * @param  string $sFilename The filename to give the PDF
-     * @param  array  $aOptions  An array of options to pass to DomPDF's stream() method
+     * @param string $sFilename The filename to give the PDF
+     * @param array  $aOptions  An array of options to pass to DomPDF's stream() method
      *
      * @return void
      */
@@ -272,8 +286,8 @@ class Pdf
     /**
      * Saves a PDF to disk
      *
-     * @param  string $sPath     The path to save to
-     * @param  string $sFilename The filename to give the PDF
+     * @param string $sPath     The path to save to
+     * @param string $sFilename The filename to give the PDF
      *
      * @return boolean
      */
@@ -300,8 +314,8 @@ class Pdf
     /**
      * Saves the PDF to the CDN
      *
-     * @param  string $sFilename The filename to give the object
-     * @param  string $sBucket   The name of the bucket to upload to
+     * @param string $sFilename The filename to give the object
+     * @param string $sBucket   The name of the bucket to upload to
      *
      * @return mixed             stdClass on success, false on failure
      */
@@ -347,8 +361,8 @@ class Pdf
     /**
      * MagicMethod routes any method calls to this class to DomPDF if it exists
      *
-     * @param  string $sMethod    The method called
-     * @param  array  $aArguments Any arguments passed
+     * @param string $sMethod    The method called
+     * @param array  $aArguments Any arguments passed
      *
      * @return mixed
      * @throws PdfException
