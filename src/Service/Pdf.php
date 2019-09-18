@@ -18,6 +18,7 @@ use Nails\Common\Service\FileCache;
 use Nails\Common\Traits\Caching;
 use Nails\Common\Traits\ErrorHandling;
 use Nails\Components;
+use Nails\Cdn;
 use Nails\Factory;
 use Nails\Pdf\Exception\PdfException;
 
@@ -321,37 +322,30 @@ class Pdf
      */
     public function saveToCdn($sFilename, $sBucket = null)
     {
-        if (Components::exists('nails/module-cdn')) {
+        //  Save temporary file
+        $sCacheDir  = CACHE_PATH;
+        $sCacheFile = 'TEMP-PDF-' . md5(uniqid() . microtime(true)) . '.pdf';
+        if ($this->save($sCacheDir, $sCacheFile)) {
 
-            //  Save temporary file
-            $sCacheDir  = CACHE_PATH;
-            $sCacheFile = 'TEMP-PDF-' . md5(uniqid() . microtime(true)) . '.pdf';
-            if ($this->save($sCacheDir, $sCacheFile)) {
+            $oCdn    = Factory::service('Cdn', Cdn\Constants::MODULE_SLUG);
+            $oResult = $oCdn->objectCreate(
+                $sCacheDir . $sCacheFile,
+                $sBucket,
+                ['filename_display' => $sFilename]
+            );
 
-                $oCdn    = Factory::service('Cdn', 'nails/module-cdn');
-                $oResult = $oCdn->objectCreate(
-                    $sCacheDir . $sCacheFile,
-                    $sBucket,
-                    ['filename_display' => $sFilename]
-                );
+            if ($oResult) {
 
-                if ($oResult) {
-
-                    @unlink($sCacheDir . $sCacheFile);
-                    $this->reset();
-                    return $oResult;
-
-                } else {
-                    $this->setError($oCdn->lastError());
-                    return false;
-                }
+                @unlink($sCacheDir . $sCacheFile);
+                $this->reset();
+                return $oResult;
 
             } else {
+                $this->setError($oCdn->lastError());
                 return false;
             }
 
         } else {
-            $this->setError('CDN module is not available');
             return false;
         }
     }
