@@ -23,6 +23,8 @@
     {
         "email": "hello@nailsapp.co.uk"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require":
     {
         "dompdf/dompdf": "~0.8.0",
