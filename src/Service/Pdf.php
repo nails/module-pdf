@@ -119,11 +119,20 @@ class Pdf
             $aOptions[$sOption] = $mValue;
         }
 
-        $sDirFont  = implode(DIRECTORY_SEPARATOR, ['dompdf', 'font', 'dir',]) . DIRECTORY_SEPARATOR;
-        $sDirCache = implode(DIRECTORY_SEPARATOR, ['dompdf', 'font', 'cache',]) . DIRECTORY_SEPARATOR;
+        $sDirFont  = 'dompdf' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR . 'dir' . DIRECTORY_SEPARATOR;
+        $sDirCache = 'dompdf' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
 
         $aOptions['fontDir']   = $oFileCache->getDir() . $sDirFont;
         $aOptions['fontCache'] = $oFileCache->getDir() . $sDirCache;
+
+        //  Ensure the directories have been created
+        if (!is_dir($aOptions['fontDir'])) {
+            $oFileCache->write(time(), $sDirFont . time());
+        }
+
+        if (!is_dir($aOptions['fontCache'])) {
+            $oFileCache->write(time(), $sDirCache . time());
+        }
 
         //  Custom options override default options
         foreach ($this->aCustomOptions as $sOption => $mValue) {
