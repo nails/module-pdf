@@ -14,6 +14,11 @@ namespace Nails\Pdf\Exception;
 
 use Nails\Common\Exception\NailsException;
 
+/**
+ * Class PdfException
+ *
+ * @package Nails\Pdf\Exception
+ */
 class PdfException extends NailsException
 {
 }

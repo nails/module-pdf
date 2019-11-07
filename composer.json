@@ -1,11 +1,15 @@
 {
     "name": "nails/module-pdf",
-    "keywords": ["Nails", "Shed Collective", "CodeIgniter", "PDF Module"],
+    "keywords": [
+        "Nails",
+        "Shed Collective",
+        "CodeIgniter",
+        "PDF Module"
+    ],
     "homepage": "http://nailsapp.co.uk/modules/pdf",
     "description": "This is the \"PDF\" module for Nails.",
     "license": "MIT",
-    "authors":
-    [
+    "authors": [
         {
             "name": "Pablo de la Pena",
             "email": "p@nailsapp.co.uk",
@@ -19,33 +23,29 @@
             "role": "Developer"
         }
     ],
-    "support":
-    {
+    "support": {
         "email": "hello@nailsapp.co.uk"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "require":
-    {
+    "require": {
         "dompdf/dompdf": "~0.8.0",
         "nails/common": "dev-develop",
         "nails/module-cdn": "dev-develop"
     },
-    "require-dev":
-    {
+    "require-dev": {
         "phpunit/phpunit": "8.*"
     },
-    "extra":
-    {
-        "nails" :
-        {
+    "extra": {
+        "nails": {
             "moduleName": "pdf",
             "type": "module",
             "namespace": "Nails\\Pdf\\"
         }
     },
-    "autoload":
-    {
-        "psr-4": {"Nails\\Pdf\\": "src/"}
+    "autoload": {
+        "psr-4": {
+            "Nails\\Pdf\\": "src/"
+        }
     }
 }

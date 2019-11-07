@@ -14,11 +14,12 @@ namespace Nails\Pdf\Service;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Nails\Common\Exception\FactoryException;
 use Nails\Common\Service\FileCache;
 use Nails\Common\Traits\Caching;
 use Nails\Common\Traits\ErrorHandling;
-use Nails\Components;
 use Nails\Cdn;
+use Nails\Environment;
 use Nails\Factory;
 use Nails\Pdf\Exception\PdfException;
 
@@ -89,6 +90,8 @@ class Pdf
 
     /**
      * Construct the PDF library
+     *
+     * @throws FactoryException
      */
     public function __construct()
     {
@@ -101,6 +104,7 @@ class Pdf
      * Instantiate a new instance of DomPDF
      *
      * @return $this
+     * @throws FactoryException
      */
     protected function instantiate()
     {
@@ -110,14 +114,16 @@ class Pdf
         /** @var FileCache $oFileCache */
         $oFileCache = Factory::service('FileCache');
 
-        $aDefaultOptions              = self::DEFAULT_OPTIONS;
-        $aDefaultOptions['fontDir']   = $oFileCache->getDir() . 'dompdf/font/dir/';
-        $aDefaultOptions['fontCache'] = $oFileCache->getDir() . 'dompdf/font/cache/';
-
         //  Default options
         foreach (self::DEFAULT_OPTIONS as $sOption => $mValue) {
             $aOptions[$sOption] = $mValue;
         }
+
+        $sDirFont  = implode(DIRECTORY_SEPARATOR, ['dompdf', 'font', 'dir',]) . DIRECTORY_SEPARATOR;
+        $sDirCache = implode(DIRECTORY_SEPARATOR, ['dompdf', 'font', 'cache',]) . DIRECTORY_SEPARATOR;
+
+        $aOptions['fontDir']   = $oFileCache->getDir() . $sDirFont;
+        $aOptions['fontCache'] = $oFileCache->getDir() . $sDirCache;
 
         //  Custom options override default options
         foreach ($this->aCustomOptions as $sOption => $mValue) {
@@ -132,6 +138,19 @@ class Pdf
         $this->oDomPdf = new Dompdf($oOptions);
         $this->setPaperSize($this->sPaperSize, $this->sPaperOrientation);
 
+        //  Define the HTTPContext, allow insecure on dev
+        if (Environment::is(Environment::ENV_DEV)) {
+            $this->oDomPdf->setHttpContext(
+                stream_context_create([
+                    'ssl' => [
+                        'verify_peer'       => false,
+                        'verify_peer_name'  => false,
+                        'allow_self_signed' => true,
+                    ],
+                ])
+            );
+        }
+
         return $this;
     }
 
@@ -141,6 +160,7 @@ class Pdf
      * Unset the instance of DomPDF and re-instantiate
      *
      * @return $this
+     * @throws FactoryException
      */
     public function reset()
     {
@@ -205,7 +225,7 @@ class Pdf
     /**
      * Alias for enabling or disabling remote resources in PDFs
      *
-     * @param boolean $bValue whether to enable remote resources
+     * @param boolean $bValue Whether to enable remote resources
      *
      * @return $this
      */
@@ -224,6 +244,7 @@ class Pdf
      * @param array $aData  View variables to pass to the view
      *
      * @return void
+     * @throws FactoryException
      */
     public function loadView($mViews, $aData = [])
     {
@@ -291,6 +312,7 @@ class Pdf
      * @param string $sFilename The filename to give the PDF
      *
      * @return boolean
+     * @throws FactoryException
      */
     public function save($sPath, $sFilename)
     {
@@ -319,6 +341,7 @@ class Pdf
      * @param string $sBucket   The name of the bucket to upload to
      *
      * @return mixed             stdClass on success, false on failure
+     * @throws FactoryException
      */
     public function saveToCdn($sFilename, $sBucket = null)
     {
