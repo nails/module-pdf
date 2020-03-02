@@ -354,8 +354,9 @@ class Pdf
      */
     public function saveToCdn($sFilename, $sBucket = null)
     {
-        //  Save temporary file
-        $sCacheDir  = CACHE_PATH;
+        /** @var FileCache $oFileCache */
+        $oFileCache = Factory::service('FileCache');
+        $sCacheDir  = $oFileCache->getDir();
         $sCacheFile = 'TEMP-PDF-' . md5(uniqid() . microtime(true)) . '.pdf';
         if ($this->save($sCacheDir, $sCacheFile)) {
 
