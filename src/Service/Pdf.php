@@ -68,7 +68,7 @@ class Pdf
     /**
      * Stores any custom options as applied by the user so that they are maintained across instances
      *
-     * @var array
+     * @var mixed[]
      */
     protected $aCustomOptions = [];
 
@@ -106,7 +106,7 @@ class Pdf
      * @return $this
      * @throws FactoryException
      */
-    protected function instantiate()
+    protected function instantiate(): self
     {
         $oOptions = new Options();
         $aOptions = [];
@@ -171,7 +171,7 @@ class Pdf
      * @return $this
      * @throws FactoryException
      */
-    public function reset()
+    public function reset(): self
     {
         unset($this->oDomPdf);
         $this->instantiate();
@@ -184,11 +184,11 @@ class Pdf
      * Defines a DomPDF constant, if not already defined
      *
      * @param string $sOption The name of the option
-     * @param string $mValue  The value to give the option
+     * @param mixed  $mValue  The value to give the option
      *
-     * @return $this;
+     * @return $this
      */
-    public function setOption($sOption, $mValue)
+    public function setOption(string $sOption, $mValue): self
     {
         $this->aCustomOptions[$sOption] = $mValue;
         $this->oDomPdf->set_option($sOption, $mValue);
@@ -206,7 +206,7 @@ class Pdf
      * @return $this
      * @deprecated
      */
-    public function setConfig($sOption, $mValue)
+    public function setConfig(string $sOption, $mValue): self
     {
         return $this->setOption($sOption, $mValue);
     }
@@ -221,7 +221,7 @@ class Pdf
      *
      * @return $this
      */
-    public function setPaperSize($sSize = null, $sOrientation = null)
+    public function setPaperSize(string $sSize = null, string $sOrientation = null): self
     {
         $this->sPaperSize        = $sSize ?: static::DEFAULT_PAPER_SIZE;
         $this->sPaperOrientation = $sOrientation ?: static::DEFAULT_PAPER_ORIENTATION;
@@ -234,11 +234,11 @@ class Pdf
     /**
      * Alias for enabling or disabling remote resources in PDFs
      *
-     * @param boolean $bValue Whether to enable remote resources
+     * @param bool $bValue Whether to enable remote resources
      *
      * @return $this
      */
-    public function enableRemote($bValue = true)
+    public function enableRemote(bool $bValue = true): self
     {
         $this->setOption('isRemoteEnabled', $bValue);
         return $this;
@@ -249,17 +249,19 @@ class Pdf
     /**
      * Loads CI views and passes it as HTML to DomPDF
      *
-     * @param mixed $mViews An array of views, or a single view as a string
-     * @param array $aData  View variables to pass to the view
+     * @param string|string[] $mViews An array of views, or a single view as a string
+     * @param mixed[]         $aData  View variables to pass to the view
      *
      * @return void
      * @throws FactoryException
      */
-    public function loadView($mViews, $aData = [])
+    public function loadView($mViews, array $aData = []): void
     {
         $sHtml  = '';
         $aViews = array_filter((array) $mViews);
-        $oView  = Factory::service('View');
+
+        /** @var \Nails\Common\Service\View $oView */
+        $oView = Factory::service('View');
 
         foreach ($aViews as $sView) {
             $sHtml .= $oView->load($sView, $aData, true);
@@ -273,12 +275,12 @@ class Pdf
     /**
      * Renders the PDF and sends it to the browser as a download.
      *
-     * @param string $sFilename The filename to give the PDF
-     * @param array  $aOptions  An array of options to pass to DomPDF's stream() method
+     * @param string  $sFilename The filename to give the PDF
+     * @param mixed[] $aOptions  An array of options to pass to DomPDF's stream() method
      *
-     * @return void|bool
+     * @return void
      */
-    public function download($sFilename = '', $aOptions = [])
+    public function download(string $sFilename = '', array $aOptions = []): void
     {
         $sFilename = $sFilename ? $sFilename : self::DEFAULT_FILE_NAME;
 
@@ -295,12 +297,12 @@ class Pdf
     /**
      * Renders the PDF and sends it to the browser as an inline PDF.
      *
-     * @param string $sFilename The filename to give the PDF
-     * @param array  $aOptions  An array of options to pass to DomPDF's stream() method
+     * @param string  $sFilename The filename to give the PDF
+     * @param mixed[] $aOptions  An array of options to pass to DomPDF's stream() method
      *
      * @return void
      */
-    public function stream($sFilename = '', $aOptions = [])
+    public function stream(string $sFilename = '', array $aOptions = []): void
     {
         $sFilename = $sFilename ? $sFilename : self::DEFAULT_FILE_NAME;
 
@@ -320,10 +322,10 @@ class Pdf
      * @param string $sPath     The path to save to
      * @param string $sFilename The filename to give the PDF
      *
-     * @return boolean
+     * @return bool
      * @throws FactoryException
      */
-    public function save($sPath, $sFilename)
+    public function save(string $sPath, string $sFilename): bool
     {
         if (!is_writable($sPath)) {
             $this->setError('Cannot write to ' . $sPath);
@@ -349,10 +351,10 @@ class Pdf
      * @param string $sFilename The filename to give the object
      * @param string $sBucket   The name of the bucket to upload to
      *
-     * @return mixed             stdClass on success, false on failure
+     * @return \stdClass|bool
      * @throws FactoryException
      */
-    public function saveToCdn($sFilename, $sBucket = null)
+    public function saveToCdn(string $sFilename, string $sBucket = null)
     {
         /** @var FileCache $oFileCache */
         $oFileCache = Factory::service('FileCache');
@@ -360,6 +362,7 @@ class Pdf
         $sCacheFile = 'TEMP-PDF-' . md5(uniqid() . microtime(true)) . '.pdf';
         if ($this->save($sCacheDir, $sCacheFile)) {
 
+            /** @var \Nails\Cdn\Service\Cdn $oCdn */
             $oCdn    = Factory::service('Cdn', Cdn\Constants::MODULE_SLUG);
             $oResult = $oCdn->objectCreate(
                 $sCacheDir . $sCacheFile,
@@ -388,8 +391,8 @@ class Pdf
     /**
      * MagicMethod routes any method calls to this class to DomPDF if it exists
      *
-     * @param string $sMethod    The method called
-     * @param array  $aArguments Any arguments passed
+     * @param string  $sMethod    The method called
+     * @param mixed[] $aArguments Any arguments passed
      *
      * @return mixed
      * @throws PdfException
