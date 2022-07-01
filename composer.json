@@ -29,7 +29,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "dompdf/dompdf": "~1.2.0",
+        "dompdf/dompdf": "~2.0.0",
         "nails/common": "dev-develop",
         "nails/module-cdn": "dev-develop"
     },
