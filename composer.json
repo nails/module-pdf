@@ -30,8 +30,8 @@
     "prefer-stable": true,
     "require": {
         "dompdf/dompdf": "~2.0.0",
-        "nails/common": "dev-feature/pre-new-admin",
-        "nails/module-cdn": "dev-feature/pre-new-admin"
+        "nails/common": "dev-feature/pre-new-admin-ci-php8",
+        "nails/module-cdn": "dev-feature/pre-new-admin-ci-php8"
     },
     "require-dev": {
         "phpunit/phpunit": "9.*",
