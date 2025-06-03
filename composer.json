@@ -34,8 +34,8 @@
     "require":
     {
         "dompdf/dompdf": "3.*",
-        "nails/common": "dev-feature/pre-new-admin-ci-php8",
-        "nails/module-cdn": "dev-feature/pre-new-admin-ci-php8"
+        "nails/common": "dev-feature/pre-new-admin",
+        "nails/module-cdn": "dev-feature/pre-new-admin"
     },
     "require-dev":
     {
