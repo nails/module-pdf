@@ -221,7 +221,7 @@ class Pdf
      *
      * @return $this
      */
-    public function setPaperSize(string $sSize = null, string $sOrientation = null): self
+    public function setPaperSize(?string $sSize = null, ?string $sOrientation = null): self
     {
         $this->sPaperSize        = $sSize ?: static::DEFAULT_PAPER_SIZE;
         $this->sPaperOrientation = $sOrientation ?: static::DEFAULT_PAPER_ORIENTATION;
@@ -354,7 +354,7 @@ class Pdf
      * @return \stdClass|bool
      * @throws FactoryException
      */
-    public function saveToCdn(string $sFilename, string $sBucket = null)
+    public function saveToCdn(string $sFilename, ?string $sBucket = null)
     {
         /** @var FileCache $oFileCache */
         $oFileCache = Factory::service('FileCache');
