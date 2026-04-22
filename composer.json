@@ -29,6 +29,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "php": ">=8.3",
         "dompdf/dompdf": "3.*",
         "nails/common": "dev-develop",
         "nails/module-cdn": "dev-develop"
